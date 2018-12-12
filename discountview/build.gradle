@@ -40,7 +40,7 @@ dependencies {
 publish {
     userOrg = 'huanglinqing'//bintray.com用户名
     groupId = 'com.hlq'//jcenter上的路径
-    artifactId = 'imageviewBound'//项目名称
+    artifactId = 'discountView'//项目名称
     publishVersion = '1.0.0'//版本号
-    website = 'https://github.com/huanglinqing123/ImageviewBound'
+    website = 'https://github.com/huanglinqing123/DiscountView'
 }

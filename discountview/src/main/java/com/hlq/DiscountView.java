@@ -7,7 +7,14 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.hlq.com.com.hlq.R;
 
 /**
  * @author Huanglinqing
@@ -15,16 +22,17 @@ import android.widget.TextView;
  * 打折View
  */
 
-public class DiscountView extends TextView {
+public class DiscountView extends LinearLayout {
 
-
-    private Paint paintFrame;
     private Paint paintDiscount;
     private Path path;
     private Paint paintDisText;
     private String discountNumber = "9折";
     private boolean isDiscount = true;
-    private int boderColor = Color.parseColor("#18abbb");
+
+    private View mRoot;
+    private TextView dataType;
+    private TextView price;
 
     public DiscountView(Context context) {
         super(context);
@@ -39,68 +47,73 @@ public class DiscountView extends TextView {
     public DiscountView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
-    }
 
+    }
 
     /**
      * 初始化
      */
     private void init() {
-        paintFrame = new Paint();
-        paintDiscount = new Paint();
-        paintDisText = new Paint();
-        paintFrame.setAntiAlias(true);
-        paintFrame.setColor(boderColor);
-        paintDisText.setAntiAlias(true);
-        paintDisText.setColor(Color.WHITE);
-        paintDisText.setStyle(Paint.Style.STROKE);
-        paintFrame.setStrokeWidth(2f);
-        paintFrame.setStyle(Paint.Style.STROKE);
-        paintDiscount.setColor(Color.RED);
-        paintDiscount.setStyle(Paint.Style.FILL);
+        mRoot = LayoutInflater.from(getContext()).inflate(R.layout.view_layout, this);
+        price = mRoot.findViewById(R.id.small);
+        dataType = mRoot.findViewById(R.id.big);
+        setWillNotDraw(false);
+        initView();
     }
 
 
     /**
+     * 初始化画笔等属性
+     */
+    private void initView() {
+        paintDiscount = new Paint();
+        paintDisText = new Paint();
+        paintDisText.setAntiAlias(true);
+        paintDisText.setColor(Color.WHITE);
+        paintDisText.setStyle(Paint.Style.STROKE);
+        paintDiscount.setColor(Color.RED);
+        paintDiscount.setStyle(Paint.Style.FILL);
+    }
+
+    /**
+     * 绘制标签
+     *
      * @param canvas
      */
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        int width = getMeasuredWidth();
-        int height = getMeasuredHeight();
 
-        int left = width / 4;
-        int top = height / 4;
-        int right = width - width / 4;
-        int bottom = height - height / 4;
+        int left = mRoot.getLeft();
+        int top = mRoot.getTop();
+        int right = mRoot.getRight();
+        int bottom = mRoot.getBottom();
 
         int viewHeight = bottom - top;
         int viewWidth = right - left;
-        canvas.drawRect(left, top, right, bottom, paintFrame);
+
 
         if (isDiscount) {
             /**
              * 绘制打折
              */
             path = new Path();
-            path.moveTo(left, top + viewHeight / 4);
-            path.lineTo(left + viewWidth / 4, top);
-            path.lineTo(left + viewWidth / 2, top);
-            path.lineTo(left, top + viewHeight / 2);
+            path.moveTo(0, viewHeight / 4);
+            path.lineTo(viewWidth / 4, 0);
+            path.lineTo(viewWidth / 2, 0);
+            path.lineTo(0, viewHeight / 2);
             path.close();
             canvas.drawPath(path, paintDiscount);
 
-            /**
-             * 绘制折扣文字
-             */
+//            /**
+//             * 绘制折扣文字
+//             */
             paintDisText.setTextSize(35f);
             paintDisText.setTextAlign(Paint.Align.LEFT);
-            float hOffset = (float) Math.cos(45f) * (viewHeight / 4);
-            float vOffset = (float) ((Math.cos(45f) * (viewHeight / 2)) - (Math.cos(45f) * (viewHeight / 4)));
+            float hOffset = (float) (Math.sqrt((Math.pow(viewHeight / 4.0f, 2) + Math.pow(viewWidth / 4.0f, 2))) / 2.0f) -20f;
+            float vOffset = (float) (viewHeight * viewWidth * Math.sqrt((Math.pow(viewHeight, 2) + Math.pow(viewWidth, 2))) / ((Math.pow(viewHeight, 2) + Math.pow(viewWidth, 2))) / 6.0f) + 3f;
             canvas.drawTextOnPath(discountNumber, path, hOffset, vOffset, paintDisText);
         }
-
 
     }
 
@@ -116,6 +129,15 @@ public class DiscountView extends TextView {
     }
 
     /**
+     * 设置打折文字大小
+     *
+     * @param size
+     */
+    public void setDisCountNumber(float size) {
+        paintDisText.setTextSize(size);
+    }
+
+    /**
      * 设置是否绘制打折 默认为true
      *
      * @param discount
@@ -125,13 +147,40 @@ public class DiscountView extends TextView {
         invalidate();
     }
 
+
     /**
-     * 设置边框颜色 默认为浅蓝绿
-     *
-     * @param boderColor
+     * 设置较大文字
      */
-    public void setBoderColor(int boderColor) {
-        this.boderColor = boderColor;
+    public void setTextBig(String big) {
+        dataType.setText(big);
     }
+
+    /**
+     * 设置较小文字
+     *
+     * @param small
+     */
+    public void setTextSamll(String small) {
+        price.setText(small);
+    }
+
+    /**
+     * 设置较大文字大小
+     *
+     * @param size
+     */
+    public void setTextzieBig(float size) {
+        dataType.setTextSize(size);
+    }
+
+    /**
+     * 设置较小文字大小
+     *
+     * @param size
+     */
+    public void setTextzieSmall(float size) {
+        price.setTextSize(size);
+    }
+
 
 }

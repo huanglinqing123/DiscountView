@@ -3,13 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     tools:context="com.hlq.com.discount.MainActivity">
 
     <com.hlq.DiscountView
-        android:id="@+id/textView"
         android:layout_gravity="center"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="250dp" />
+        android:id="@+id/textView"
+        android:layout_width="150dp"
+        android:layout_height="120dp"
+     />
 
 </LinearLayout>
